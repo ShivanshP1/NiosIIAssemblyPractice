@@ -1,0 +1,50 @@
+.global _start
+_start:
+	ldw r2, N(r0) #Num
+	movia r3, LIST #List
+	movia sp, 0x7FFFFC
+	call CSum #Run Subroutine 
+	stw r2, Sum(r0)
+	
+_end:
+	break
+	
+CSum:
+	subi sp, sp, 16
+	stw  r4, 12(sp) #SUM
+	stw  r2, 8(sp) #N
+	stw  r6, 4(sp) #result
+	stw  r7, 0(sp) #Element in List
+	
+	#------------------------------------------------------------------
+CSum_loop:
+	CSum_if:
+		ldw r7,0(r3)
+		ble r7,r0, CSum_end		 #If List[counter] < 0 then ment
+	
+	CSum_add:
+		add  r4,r4,r7  			 #Sum = Sum + List[Counter]
+		
+	CSum_end:
+		addi r3,r3,4       		 #Increment the list to next Element
+		subi r2,r2,1			 #Decrement the loop index
+		bgt r2, r0, CSum_loop 	 #If loop index > 0 then continue loop
+		
+	#------------------------------------------------------------------	
+		#End of loop
+		mov r2, r4
+		
+		ldw r7, 0(sp)
+		ldw r6, 4(sp)
+		ldw r5, 8(sp)
+		ldw r4, 12(sp)
+		addi sp, sp, 16
+	
+	ret
+
+.org 0x1000
+LIST: .word 12,15,-2,1,-6,5
+N: .word 6
+Sum: .skip 4
+
+	
