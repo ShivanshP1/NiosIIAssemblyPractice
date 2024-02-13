@@ -1,0 +1,17 @@
+.global _start
+_start:
+	ldw r2,A(r0)
+	ldw r3,B(r0)
+	add r4, r2, r3
+	stw r4, C(r0)
+	
+	
+_end:
+	break
+	
+	
+.org 0x1000
+
+A: .word 6
+B: .word 7
+C: .skip 4
